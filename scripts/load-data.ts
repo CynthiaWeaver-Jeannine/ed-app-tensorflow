@@ -2,7 +2,7 @@ import { faker } from "@faker-js/faker";
 import bcrypt from "bcrypt";
 import { getClient } from "@/db";
 
-async function loadFakeData(numUsers: number = 10) {
+async function loadData(numUsers: number = 10) {
   console.log(`executing load fake data. generating ${numUsers} users.`);
 
   const client = await getClient();
@@ -60,4 +60,4 @@ async function loadFakeData(numUsers: number = 10) {
 
 const numUsers = parseInt(process.argv[2]) || 10;
 console.log(`loading ${numUsers} fake users.`);
-loadFakeData(numUsers);
+loadData(numUsers);
