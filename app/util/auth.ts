@@ -1,34 +1,24 @@
-import Image from "next/image";
-import Link from "next/link";
+import { sql } from "@/db";
+import { jwtVerify } from "jose";
+import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
-function User({ user, href }: { user: UserI; href?: string }) {
-  return (
-    <div>
-      <Link
-        href={`/${href || user.username}`}
-        className="flex flex-row items-center"
-      >
-        <div>
-          {user.avatar && (
-            <Image
-              src={user.avatar}
-              width={50}
-              height={50}
-              alt={user.username}
-              className="rounded-full mr-3"
-            />
-          )}
-          {!user.avatar && (
-            <div
-              style={{ width: 50, height: 50 }}
-              className="bg-slate-600 rounded-full mr-3"
-            ></div>
-          )}
-        </div>
-        <div>{user.username}</div>
-      </Link>
-    </div>
-  );
+export async function getJWTPayload() {
+  const cookieStore = cookies();
+  const token = cookieStore.get("jwt-token");
+  const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
+  const { payload, protectedHeader } = await jwtVerify(token?.value!, secret);
+  return payload;
 }
 
-export default User;
+export async function authorizeAdmin(func: Function) {
+  const jwtPayload = await getJWTPayload();
+  const res = await sql("select is_admin from users where id = $1", [
+    jwtPayload.sub,
+  ]);
+  const data = res.rows[0];
+  if (!data.is_admin) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 403 });
+  }
+  return func();
+}
