@@ -1,10 +1,10 @@
 import User from "@/app/components/user";
 import useSWR from "swr";
 
-function FollowingList({ index }: { index: number }) {
+function FollowersList({ index }: { index: number }) {
   const { data: userData } = useSWR("/api/users/profile");
   const { data: followerData } = useSWR(
-    () => "/api/users/" + userData.data.id + "/following?page=" + index
+    () => "/api/users/" + userData.data.id + "/followers?page=" + index
   );
 
   if (!followerData) return <div>loading...</div>;
@@ -22,4 +22,4 @@ function FollowingList({ index }: { index: number }) {
   );
 }
 
-export default FollowingList;
+export default FollowersList;
