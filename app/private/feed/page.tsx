@@ -1,27 +1,11 @@
-import { useState } from "react";
-import FollowersList from "./followers-list";
+"use client";
+import FeedContainer from "./feed-container";
 
-function FollowersContainer() {
-  const [cnt, setCnt] = useState(1);
-
-  const pages = [];
-  for (let i = 0; i < cnt; i++) {
-    pages.push(<FollowersList index={i} key={i} />);
-  }
-
+export default function Feed() {
   return (
-    <div>
-      {pages}
-      <div className="flex justify-center w-full">
-        <button
-          onClick={() => setCnt(cnt + 1)}
-          className="dark:bg-slate-900 bg-slate-400 p-2 rounded-lg"
-        >
-          Load More
-        </button>
-      </div>
-    </div>
+    <main>
+      <h2>Feed</h2>
+      <FeedContainer />
+    </main>
   );
 }
-
-export default FollowersContainer;
